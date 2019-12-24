@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 )
@@ -20,22 +18,7 @@ func main() {
 		db.Create(&user)
 	}
 
-	u := User{Username: "tmacmillan"}
-	db.Where(&u).First(&u)
-
-	// u := User{}
-	// db.Where("username = ?", "tmacmillan").First(&u)
-
-	fmt.Println(u)
-
-	u.LastName = "Beeblebrox"
-
-	db.Save(&u)
-
-	user := User{}
-	db.Where(&u).First(&user)
-
-	fmt.Println(user)
+	db.Where(&User{Username: "tmacmillan"}).Delete(&User{})
 
 }
 
