@@ -16,19 +16,17 @@ func main() {
 	db.DropTable(&User{})
 	db.CreateTable(&User{})
 
-	user := User{
-		Username:  "adent",
-		FirstName: "Arthur",
-		LastName:  "Dent",
+	for _, user := range users {
+		db.Create(&user)
 	}
 
-	fmt.Println(user)
+	u := User{}
+	// db.First(&u)
+	db.Last(&u)
 
-	db.Create(&user)
+	fmt.Println(u)
 
-	fmt.Println(user)
-
-	println("done")
+	fmt.Println(users)
 }
 
 type User struct {
@@ -36,4 +34,11 @@ type User struct {
 	Username  string
 	FirstName string
 	LastName  string
+}
+
+var users []User = []User{
+	User{Username: "adent", FirstName: "Arthur", LastName: "Dent"},
+	User{Username: "fprefect", FirstName: "Ford", LastName: "Prefect"},
+	User{Username: "tmacmillan", FirstName: "Tricia", LastName: "MacMillan"},
+	User{Username: "mrobot", FirstName: "Marvin", LastName: "Robot"},
 }
