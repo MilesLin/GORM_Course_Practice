@@ -20,13 +20,23 @@ func main() {
 		db.Create(&user)
 	}
 
-	u := User{}
-	// db.First(&u)
-	db.Last(&u)
+	u := User{Username: "tmacmillan"}
+	db.Where(&u).First(&u)
+
+	// u := User{}
+	// db.Where("username = ?", "tmacmillan").First(&u)
 
 	fmt.Println(u)
 
-	fmt.Println(users)
+	u.LastName = "Beeblebrox"
+
+	db.Save(&u)
+
+	user := User{}
+	db.Where(&u).First(&user)
+
+	fmt.Println(user)
+
 }
 
 type User struct {
