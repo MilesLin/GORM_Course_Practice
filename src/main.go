@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 )
@@ -11,7 +13,20 @@ func main() {
 		panic(err.Error())
 	}
 	defer db.Close()
+	db.DropTable(&User{})
 	db.CreateTable(&User{})
+
+	user := User{
+		Username:  "adent",
+		FirstName: "Arthur",
+		LastName:  "Dent",
+	}
+
+	fmt.Println(user)
+
+	db.Create(&user)
+
+	fmt.Println(user)
 
 	println("done")
 }
