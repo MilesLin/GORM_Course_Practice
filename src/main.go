@@ -11,16 +11,14 @@ func main() {
 		panic(err.Error())
 	}
 	defer db.Close()
+	db.CreateTable(&User{})
 
-	dbase := db.DB()
-	defer dbase.Close()
+	println("done")
+}
 
-	err = dbase.Ping()
-	if err != nil {
-		panic(err.Error())
-	}
-
-	println("Connection to database established")
-	// db, err := sql.Open("postgres", "postgres://postgres:'2wsx#EDC'@localhost/lss?sslmode=disable")
-	// db, err := sql.Open("postgres", "user=postgres password=2wsx#EDC dbname=lss sslmode=disable")
+type User struct {
+	ID        uint
+	Username  string
+	FirstName string
+	LastName  string
 }
