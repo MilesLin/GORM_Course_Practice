@@ -26,7 +26,7 @@ func main() {
 }
 
 type User struct {
-	ID        uint
+	gorm.Model
 	Username  string
 	FirstName string
 	LastName  string
