@@ -22,11 +22,10 @@ func main() {
 	}
 
 	db.Where(&User{Username: "tmacmillan"}).Delete(&User{})
-
 }
 
 type User struct {
-	gorm.Model
+	UserID    int    `gorm:"primary_key"`
 	Username  string `sql:"type:VARCHAR(15);not null"`
 	FirstName string `sql:"size:100;not null"`
 	LastName  string `sql:"unique;unique_index;not null;DEFAULT:'Smith'"`
