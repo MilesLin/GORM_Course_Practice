@@ -27,9 +27,9 @@ func main() {
 
 type User struct {
 	gorm.Model
-	Username  string `sql:"type:VARCHAR(15)"`
-	FirstName string `sql:"size:100"`
-	LastName  string `sql:"unique;unique_index"`
+	Username  string `sql:"type:VARCHAR(15);not null"`
+	FirstName string `sql:"size:100;not null"`
+	LastName  string `sql:"unique;unique_index;not null;DEFAULT:'Smith'"`
 	Count     int    `gorm:"AUTO_INCREMENT"`
 	TempField bool
 }
