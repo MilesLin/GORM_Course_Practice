@@ -12,6 +12,9 @@ func main() {
 	}
 	defer db.Close()
 	db.DropTable(&User{})
+
+	// db.SingularTable(true)
+
 	db.CreateTable(&User{})
 
 	for _, user := range users {
@@ -27,6 +30,10 @@ type User struct {
 	Username  string
 	FirstName string
 	LastName  string
+}
+
+func (u User) TableName() string {
+	return "stackeholders"
 }
 
 var users []User = []User{
