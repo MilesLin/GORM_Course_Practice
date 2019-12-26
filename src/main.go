@@ -27,8 +27,8 @@ func main() {
 
 type User struct {
 	gorm.Model
-	Username  string
-	FirstName string
+	Username  string `sql:"type:VARCHAR(15)"`
+	FirstName string `sql:"size:100"`
 	LastName  string
 }
 
