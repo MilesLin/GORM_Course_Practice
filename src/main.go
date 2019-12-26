@@ -11,18 +11,18 @@ func main() {
 		panic(err.Error())
 	}
 	defer db.Close()
-	db.DropTable(&User{})
+	// db.DropTable(&User{})
+	//
+	// db.CreateTable(&User{})
+	//
+	// db.Model(&User{}).AddIndex("idx_first_name", "first_name")
+	// db.Model(&User{}).AddUniqueIndex("idx_last_name", "last_name")
 
-	db.CreateTable(&User{})
-
-	for _, f := range db.NewScope(&User{}).Fields() {
-		println(f.Name)
-	}
-
+	db.Model(&User{}).RemoveIndex("idx_first_name")
 }
 
 type User struct {
-	Model     gorm.Model `gorm:"embedded"`
+	Model     gorm.Model
 	FirstName string
 	LastName  string
 }
