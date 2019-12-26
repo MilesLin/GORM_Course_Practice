@@ -30,7 +30,8 @@ type User struct {
 	Username  string `sql:"type:VARCHAR(15)"`
 	FirstName string `sql:"size:100"`
 	LastName  string
-	Count     int `gorm:"AUTO_INCREMENT"`
+	Count     int  `gorm:"AUTO_INCREMENT"`
+	TempField bool `sql:"-"`
 }
 
 func (u User) TableName() string {
