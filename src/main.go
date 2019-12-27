@@ -29,8 +29,8 @@ func main() {
 		Salary:    30000,
 	})
 
-	db.Debug().Table("users").Where("last_name = ?", "Dent").
-		Update("last_name", "MacMillan-Dent")
+	db.Debug().Table("users").Where("salary > ?", 40000).
+		Update("salary", gorm.Expr("salary + 5000"))
 
 }
 
