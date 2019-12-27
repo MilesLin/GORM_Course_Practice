@@ -11,30 +11,30 @@ func main() {
 		panic(err.Error())
 	}
 	defer db.Close()
-	// db.DropTable(&User{})
-	//
-	// db.CreateTable(&User{})
-	//
-	// db.Model(&User{}).AddIndex("idx_first_name", "first_name")
-	// db.Model(&User{}).AddUniqueIndex("idx_last_name", "last_name")
+	db.DropTable(&User{})
+	db.CreateTable(&User{})
+	db.DropTable(&Calendar{})
+	db.CreateTable(&Calendar{})
 
-	db.Model(&User{}).RemoveIndex("idx_first_name")
+	db.Debug().Save(&User{
+		Username: "adent",
+		Calendar: Calendar{
+			Name: "Improbable Events",
+		},
+	})
+
 }
 
 type User struct {
-	Model     gorm.Model
+	gorm.Model
+	Username  string
 	FirstName string
 	LastName  string
+	Calendar  Calendar
 }
 
-func (u User) TableName() string {
-	return "stackeholders"
+type Calendar struct {
+	gorm.Model
+	Name   string
+	UserID uint
 }
-
-//
-// var users []User = []User{
-// 	User{Username: "adent", FirstName: "Arthur", LastName: "Dent"},
-// 	User{Username: "fprefect", FirstName: "Ford", LastName: "Prefect"},
-// 	User{Username: "tmacmillan", FirstName: "Tricia", LastName: "MacMillan"},
-// 	User{Username: "mrobot", FirstName: "Marvin", LastName: "Robot"},
-// }
