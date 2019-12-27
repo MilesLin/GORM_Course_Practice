@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 )
@@ -22,6 +24,13 @@ func main() {
 			Name: "Improbable Events",
 		},
 	})
+
+	u := User{}
+	c := Calendar{}
+	db.First(&u).Related(&c, "calendar")
+	fmt.Println(u)
+	fmt.Println()
+	fmt.Println(c)
 
 }
 
