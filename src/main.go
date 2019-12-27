@@ -19,6 +19,8 @@ func main() {
 	db.CreateTable(&Calendar{})
 	db.DropTable(&Appointment{})
 	db.CreateTable(&Appointment{})
+	db.Model(&Appointment{}).
+		AddForeignKey("calendar_id", "calendars(id)", "RESTRICT", "RESTRICT")
 
 	db.Debug().Save(&User{
 		Username: "adent",
