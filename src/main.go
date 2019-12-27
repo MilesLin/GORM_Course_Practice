@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
@@ -15,20 +16,40 @@ func main() {
 	defer db.Close()
 	db.DropTable(&User{})
 	db.CreateTable(&User{})
+	db.DropTable(&Appointment{})
+	db.CreateTable(&Appointment{})
 
 	u := User{
 		FirstName: "Arthur",
 		LastName:  "Dent",
 	}
 
-	db.Create(&u)
+	appointments := []Appointment{
+		Appointment{Subject: "First"},
+		Appointment{Subject: "Second"},
+		Appointment{Subject: "Third"},
+	}
 
-	// 如果已經新增了，就不會再度新增，且會回傳 false
+	u.Appointments = appointments
+
+	db.Debug().Create(&u)
+
 	fmt.Println(db.NewRecord(&u))
 }
 
 type User struct {
 	gorm.Model
-	FirstName string
-	LastName  string
+	FirstName    string
+	LastName     string
+	Appointments []Appointment
+}
+
+type Appointment struct {
+	gorm.Model
+	UserID      uint
+	StartTime   *time.Time
+	Duration    uint
+	Attendees   []*User
+	Subject     string
+	Description string
 }
