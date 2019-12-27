@@ -19,16 +19,23 @@ func main() {
 	db.CreateTable(&Calendar{})
 	db.DropTable(&Appointment{})
 	db.CreateTable(&Appointment{})
-	db.Model(&Appointment{}).
-		AddForeignKey("calendar_id", "calendars(id)", "RESTRICT", "RESTRICT")
+	users := []User{
+		{Username: "fprefect"},
+		{Username: "tmacmillan"},
+		{Username: "morbot"},
+	}
+
+	for i := range users {
+		db.Save(&users[i])
+	}
 
 	db.Debug().Save(&User{
 		Username: "adent",
 		Calendar: Calendar{
 			Name: "Improbable Events",
 			Appointments: []Appointment{
-				{Subject: "Spontaneous Whale Generation"},
-				{Subject: "Saved from Vaccuum of Space"},
+				{Subject: "Spontaneous Whale Generation", Attendees: users},
+				{Subject: "Saved from Vaccuum of Space", Attendees: users},
 			},
 		},
 	})
@@ -57,4 +64,5 @@ type Appointment struct {
 	StartTime   time.Time
 	Length      uint
 	CalendarID  uint
+	Attendees   []User `gorm:"many2many:appointment_user"`
 }
