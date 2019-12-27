@@ -14,12 +14,17 @@ func main() {
 	db.DropTable(&User{})
 	db.CreateTable(&User{})
 
-	u := &User{
-		FirstName: "Perfect",
-		LastName:  "Ford",
-	}
-	db.Create(&u)
-	db.Debug().Delete(&u)
+	db.Create(&User{
+		FirstName: "Tricia",
+		LastName:  "MacMillan-Dent",
+	})
+
+	db.Create(&User{
+		FirstName: "Arthur",
+		LastName:  "MacMillan-Dent",
+	})
+
+	db.Debug().Where("last_name LIKE ?", "Mac%").Delete(&User{})
 
 }
 
