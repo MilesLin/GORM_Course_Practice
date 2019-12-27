@@ -20,21 +20,23 @@ func main() {
 	db.CreateTable(&Appointment{})
 
 	u := User{
-		FirstName: "Arthur",
-		LastName:  "Dent",
+		FirstName: "Ford",
+		LastName:  "Prefect",
 	}
 
-	appointments := []Appointment{
-		Appointment{Subject: "First"},
-		Appointment{Subject: "Second"},
-		Appointment{Subject: "Third"},
-	}
+	db.Create(&u)
 
-	u.Appointments = appointments
+	fmt.Println(u)
+	fmt.Println()
 
-	db.Debug().Create(&u)
+	// db.Debug().Model(&u).Update("first_name", "Zaphod")
+	db.Debug().Model(&u).Updates(
+		map[string]interface{}{
+			"first_name": "Zaphod",
+			"last_name":  "Beeblebrox",
+		})
 
-	fmt.Println(db.NewRecord(&u))
+	fmt.Println(u)
 }
 
 type User struct {
