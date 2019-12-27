@@ -30,11 +30,7 @@ func main() {
 	fmt.Println()
 
 	// db.Debug().Model(&u).Update("first_name", "Zaphod")
-	db.Debug().Model(&u).Updates(
-		map[string]interface{}{
-			"first_name": "Zaphod",
-			"last_name":  "Beeblebrox",
-		})
+	db.Debug().Model(&u).UpdateColumn("first_name", "Zaphod")
 
 	fmt.Println(u)
 }
@@ -44,6 +40,15 @@ type User struct {
 	FirstName    string
 	LastName     string
 	Appointments []Appointment
+}
+
+func (u *User) BeforeUpdate() error {
+	println("Before Update")
+	return nil
+}
+func (u *User) AfterUpdate() error {
+	println("After Update")
+	return nil
 }
 
 type Appointment struct {
