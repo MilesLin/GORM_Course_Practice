@@ -54,7 +54,7 @@ type Calendar struct {
 	gorm.Model
 	Name         string
 	UserID       uint
-	Appointments []Appointment
+	Appointments []Appointment `gorm:"polymorphic:owner"`
 }
 
 type Appointment struct {
@@ -63,6 +63,12 @@ type Appointment struct {
 	Description string
 	StartTime   time.Time
 	Length      uint
-	CalendarID  uint
+	OwnerID     uint
+	OwnerType   string
 	Attendees   []User `gorm:"many2many:appointment_user"`
+}
+
+type TaskList struct {
+	gorm.Model
+	Appointments []Appointment `gorm:"polymorphic:owner"`
 }
