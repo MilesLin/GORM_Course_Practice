@@ -14,22 +14,28 @@ func main() {
 	db.DropTable(&User{})
 	db.CreateTable(&User{})
 
-	db.Create(&User{
-		FirstName: "Tricia",
-		LastName:  "MacMillan-Dent",
-	})
+	u := User{
+		FirstName: "Marvin",
+		LastName:  "Robot",
+	}
 
-	db.Create(&User{
-		FirstName: "Arthur",
-		LastName:  "MacMillan-Dent",
-	})
+	tx := db.Begin()
+	if err = tx.Debug().Create(&u).Error; err != nil {
+		tx.Rollback()
+	}
 
-	db.Debug().Where("last_name LIKE ?", "Mac%").Delete(&User{})
+	u.LastName = "The Happy Robot"
+
+	if err = tx.Debug().Save(&u).Error; err != nil {
+		tx.Rollback()
+	}
+
+	tx.Commit()
 
 }
 
 type User struct {
-	gorm.Model
+	ID        uint
 	FirstName string
 	LastName  string
 }
