@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -19,26 +18,27 @@ func main() {
 	db.DropTable(&Appointment{})
 	db.CreateTable(&Appointment{})
 
-	u := User{
-		FirstName: "Ford",
-		LastName:  "Prefect",
-	}
+	db.Create(&User{
+		FirstName: "Tricia",
+		LastName:  "Dent",
+		Salary:    50000,
+	})
+	db.Create(&User{
+		FirstName: "Authur",
+		LastName:  "Dent",
+		Salary:    30000,
+	})
 
-	db.Create(&u)
+	db.Debug().Table("users").Where("last_name = ?", "Dent").
+		Update("last_name", "MacMillan-Dent")
 
-	fmt.Println(u)
-	fmt.Println()
-
-	// db.Debug().Model(&u).Update("first_name", "Zaphod")
-	db.Debug().Model(&u).UpdateColumn("first_name", "Zaphod")
-
-	fmt.Println(u)
 }
 
 type User struct {
 	gorm.Model
 	FirstName    string
 	LastName     string
+	Salary       uint
 	Appointments []Appointment
 }
 
