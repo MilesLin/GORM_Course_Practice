@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 )
@@ -14,6 +16,15 @@ func main() {
 	db.DropTable(&User{})
 	db.CreateTable(&User{})
 
+	u := User{
+		FirstName: "Arthur",
+		LastName:  "Dent",
+	}
+
+	db.Create(&u)
+
+	// 如果已經新增了，就不會再度新增，且會回傳 false
+	fmt.Println(db.NewRecord(&u))
 }
 
 type User struct {
