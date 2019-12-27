@@ -1,8 +1,6 @@
 package main
 
 import (
-	"time"
-
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 )
@@ -15,48 +13,18 @@ func main() {
 	defer db.Close()
 	db.DropTable(&User{})
 	db.CreateTable(&User{})
-	db.DropTable(&Appointment{})
-	db.CreateTable(&Appointment{})
 
-	db.Create(&User{
-		FirstName: "Tricia",
-		LastName:  "Dent",
-		Salary:    50000,
-	})
-	db.Create(&User{
-		FirstName: "Authur",
-		LastName:  "Dent",
-		Salary:    30000,
-	})
-
-	db.Debug().Table("users").Where("salary > ?", 40000).
-		Update("salary", gorm.Expr("salary + 5000"))
+	u := &User{
+		FirstName: "Perfect",
+		LastName:  "Ford",
+	}
+	db.Create(&u)
+	db.Debug().Delete(&u)
 
 }
 
 type User struct {
-	gorm.Model
-	FirstName    string
-	LastName     string
-	Salary       uint
-	Appointments []Appointment
-}
-
-func (u *User) BeforeUpdate() error {
-	println("Before Update")
-	return nil
-}
-func (u *User) AfterUpdate() error {
-	println("After Update")
-	return nil
-}
-
-type Appointment struct {
-	gorm.Model
-	UserID      uint
-	StartTime   *time.Time
-	Duration    uint
-	Attendees   []*User
-	Subject     string
-	Description string
+	ID        uint
+	FirstName string
+	LastName  string
 }
