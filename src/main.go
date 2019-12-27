@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 )
@@ -18,19 +16,15 @@ func main() {
 	db.DropTable(&Calendar{})
 	db.CreateTable(&Calendar{})
 
-	db.Debug().Save(&User{
+	db.Debug().Model(&Calendar{}).
+		AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+
+	db.Save(&User{
 		Username: "adent",
 		Calendar: Calendar{
 			Name: "Improbable Events",
 		},
 	})
-
-	u := User{}
-	c := Calendar{}
-	db.First(&u).Related(&c, "calendar")
-	fmt.Println(u)
-	fmt.Println()
-	fmt.Println(c)
 
 }
 
