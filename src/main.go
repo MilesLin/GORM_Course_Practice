@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -14,16 +15,17 @@ func main() {
 	}
 	// seedDB(db)
 
-	u := User{}
-	// db.Debug().First(&u)
+	users := []User{}
+	// db.Debug().Find(&users)
+	// db.Debug().Find(&users, &User{Username: "fprefect"})
+	// db.Debug().Find(&users, map[string]interface{}{"username": "fprefect"})
+	db.Debug().Find(&users, "username = ? and last_name = ?", "fprefect", "Prefect")
 
-	// 如果在資料庫沒有找到 username = 'lperosser' 的資料，則會把 &User{Username: "lperosser"} Assign 給 &u
-	// db.Debug().FirstOrInit(&u, &User{Username: "lperosser"})
-	// db.Debug().FirstOrCreate(&u, &User{Username: "lperosser"})
+	for _, u := range users {
+		fmt.Printf("\n%v\n", u)
+	}
 
-	db.Debug().Last(&u)
-
-	// fmt.Println(&u)
+	// fmt.Println(users)
 }
 
 func seedDB(db *gorm.DB) {
