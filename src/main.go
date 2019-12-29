@@ -15,19 +15,20 @@ func main() {
 	}
 	// seedDB(db)
 
-	u := User{}
+	usersVMs := []UserViewModel{}
+	db.Debug().Model(&User{}).Joins("inner join calendars on calendars.user_id = users.id").
+		Select("users.first_name, users.last_name, calendars.name").Scan(&usersVMs)
 
-	//db.Debug().Where("username = ?", "adasdfent").Attrs(&User{FirstName: "Eddie"}).FirstOrInit(&u)
-
-	db.Debug().Where("username = ?", "adent").Assign(&User{FirstName: "Eddie"}).FirstOrInit(&u)
-
-	fmt.Printf("\n%v\n", u)
+	for _, u := range usersVMs {
+		fmt.Printf("\n%v\n", u)
+	}
 
 }
 
 type UserViewModel struct {
-	FirstName string
-	LastName  string
+	FirstName    string
+	LastName     string
+	CalendarName string `gorm:"column:name"`
 }
 
 func seedDB(db *gorm.DB) {
