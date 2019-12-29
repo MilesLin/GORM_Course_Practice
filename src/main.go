@@ -15,23 +15,13 @@ func main() {
 	}
 	// seedDB(db)
 
-	// users := []User{}
+	u := User{}
 
-	// db.Debug().Select([]string{"first_name", "last_name"}).Find(&users)
+	//db.Debug().Where("username = ?", "adasdfent").Attrs(&User{FirstName: "Eddie"}).FirstOrInit(&u)
 
-	// usernames := []string{}
-	// db.Debug().Model(&User{}).Pluck("username", &usernames)
+	db.Debug().Where("username = ?", "adent").Assign(&User{FirstName: "Eddie"}).FirstOrInit(&u)
 
-	// userVMs := []UserViewModel{}
-	// db.Debug().Model(&User{}).Select([]string{"first_name", "last_name"}).Scan(&userVMs)
-	//
-	// for _, u := range userVMs {
-	// 	fmt.Printf("\n%v\n", u)
-	// }
-
-	var count int
-	db.Debug().Model(&User{}).Count(&count)
-	fmt.Println(count)
+	fmt.Printf("\n%v\n", u)
 
 }
 
