@@ -16,14 +16,15 @@ func main() {
 	// appointment_user 是指多對多的那個 table
 	// db.DropTableIfExists(&User{}, &Calendar{}, &Appointment{}, "appointment_user")
 	db.DropTableIfExists("attachments")
-	db.Debug().AutoMigrate(&User{}, &Calendar{}, &Appointment{})
+	db.AutoMigrate(&User{}, &Calendar{}, &Appointment{})
+	db.Debug().Model(&User{}).ModifyColumn("first_name", "VARCHAR(100)")
 
 }
 
 type User struct {
 	gorm.Model
 	Username  string
-	FirstName string
+	FirstName string `sql:"type:VARCHAR(100)"`
 	LastName  string
 	Calendar  Calendar
 }
