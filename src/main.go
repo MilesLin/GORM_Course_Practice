@@ -12,9 +12,18 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	seedDB(db)
+	// seedDB(db)
 
-	// fmt.Println(u)
+	u := User{}
+	// db.Debug().First(&u)
+
+	// 如果在資料庫沒有找到 username = 'lperosser' 的資料，則會把 &User{Username: "lperosser"} Assign 給 &u
+	// db.Debug().FirstOrInit(&u, &User{Username: "lperosser"})
+	// db.Debug().FirstOrCreate(&u, &User{Username: "lperosser"})
+
+	db.Debug().Last(&u)
+
+	// fmt.Println(&u)
 }
 
 func seedDB(db *gorm.DB) {
