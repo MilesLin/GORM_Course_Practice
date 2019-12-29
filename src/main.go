@@ -15,28 +15,13 @@ func main() {
 	}
 	// seedDB(db)
 
+	fmt.Printf("%p", &User{Username: "abc"})
+
 	users := []User{}
-
-	// db.Debug().Where("username = ?", "adent").Find(&users)
-	// db.Debug().Where(&User{Username: "adent"}).Find(&users)
-	// db.Debug().Where(map[string]interface{}{"username": "adent"}).Find(&users)
-
-	// db.Debug().Where("username in (?)", []string{"adent", "tmacmillan"}).Find(&users)
-
-	// db.Debug().Where("username like ?", "%mac%").Find(&users)
-
-	// db.Debug().Where("username like ? and first_name = ?", "%mac%", "Tricia").Find(&users)
-
-	// db.Debug().Where("created_at BETWEEN ? and ?", time.Now().Add(-30*24*time.Hour), time.Now()).Find(&users)
-
-	// db.Debug().Not("username = ?", "adent").Find(&users)
-	// db.Debug().Where("username != ?", "adent").Find(&users)
-
-	// temp := db.Debug().Where("username = ?", "adent").Or("username = ?", "fprefect")
-	// temp = temp.Where("created_at < ?", time.Now().Add(-30*24*time.Hour)).Find(&users)
+	db.Debug().Preload("Calendar.Appointments").Find(&users)
 
 	for _, u := range users {
-		fmt.Printf("\n%v\n", u)
+		fmt.Printf("\n%v\n", u.Calendar)
 	}
 
 	// fmt.Println(users)
