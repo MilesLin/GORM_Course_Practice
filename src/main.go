@@ -36,15 +36,13 @@ type Calendar struct {
 
 type Appointment struct {
 	gorm.Model
-	Subject           string
-	Description       string
-	StartTime         time.Time
-	Length            uint
-	CalendarID        uint
-	Recurring         bool
-	RecurrencePattern string
-	Attendees         []*User `gorm:"many2many:appointment_user"`
-	Attachments       []Attachment
+	Subject     string
+	Description string
+	StartTime   time.Time
+	Length      uint
+	CalendarID  uint
+	Attendees   []*User `gorm:"many2many:appointment_user"`
+	Attachments []Attachment
 }
 
 type Attachment struct {
