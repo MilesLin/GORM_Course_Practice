@@ -30,7 +30,7 @@ type User struct {
 type Calendar struct {
 	gorm.Model
 	Name         string
-	UserID       uint
+	UserID       uint `sql:"index:idx_calendar_user_id"`
 	Appointments []*Appointment
 }
 
@@ -40,7 +40,7 @@ type Appointment struct {
 	Description       string
 	StartTime         time.Time
 	Length            uint
-	CalendarID        uint
+	CalendarID        uint `sql:"index:idx_appointment_calendar_id"`
 	Recurring         bool
 	RecurrencePattern string
 	Attendees         []*User `gorm:"many2many:appointment_user"`
@@ -50,5 +50,5 @@ type Appointment struct {
 type Attachment struct {
 	gorm.Model
 	Data          []byte
-	AppointmentID uint
+	AppointmentID uint `sql:"index:idx_attachment_appointment_id"`
 }
