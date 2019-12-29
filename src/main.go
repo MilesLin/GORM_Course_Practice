@@ -16,8 +16,14 @@ func main() {
 	// seedDB(db)
 
 	usersVMs := []UserViewModel{}
-	db.Debug().Model(&User{}).Joins("inner join calendars on calendars.user_id = users.id").
-		Select("users.first_name, users.last_name, calendars.name").Scan(&usersVMs)
+	rows, _ := db.Debug().Model(&User{}).Joins("inner join calendars on calendars.user_id = users.id").
+		Select("users.first_name, users.last_name, calendars.name").Rows()
+
+	for rows.Next() {
+		uvm := UserViewModel{}
+		rows.Scan(&uvm.FirstName, &uvm.LastName, &uvm.CalendarName)
+		usersVMs = append(usersVMs, uvm)
+	}
 
 	for _, u := range usersVMs {
 		fmt.Printf("\n%v\n", u)
@@ -28,7 +34,7 @@ func main() {
 type UserViewModel struct {
 	FirstName    string
 	LastName     string
-	CalendarName string `gorm:"column:name"`
+	CalendarName string
 }
 
 func seedDB(db *gorm.DB) {
