@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -13,12 +15,27 @@ func main() {
 		panic(err.Error())
 	}
 
-	// appointment_user 是指多對多的那個 table
-	// db.DropTableIfExists(&User{}, &Calendar{}, &Appointment{}, "appointment_user")
-	// db.DropTableIfExists("attachments")
-	db.Debug().AutoMigrate(&User{}, &Calendar{}, &Appointment{})
-	// db.Debug().Model(&User{}).ModifyColumn("first_name", "VARCHAR(100)")
-	db.Debug().Model(&Appointment{}).DropColumn("recurring").DropColumn("recurrence_pattern")
+	db.DropTableIfExists(&User{}, &Calendar{}, &Appointment{}, "appointment_user")
+	db.AutoMigrate(&User{}, &Calendar{}, &Appointment{})
+
+	user := &User{
+		Username:  "adent",
+		FirstName: "Arthur",
+		LastName:  "Dent",
+		Calendar:  Calendar{Name: "Arthur's Calendar"},
+	}
+
+	fmt.Println("Creating")
+	db.Create(&user)
+
+	user.Calendar.Name = "Arthur's Itinerary"
+
+	fmt.Println("Updating")
+	db.Save(&user)
+
+	// fmt.Println("Deleting")
+	// db.Delete(&user)
+
 }
 
 type User struct {
@@ -29,11 +46,41 @@ type User struct {
 	Calendar  Calendar
 }
 
+func (u *User) BeforeSave() error {
+	fmt.Println("Before Save")
+	return nil
+}
+
+func (u *User) BeforeCreate() error {
+	fmt.Println("Before Create")
+	return nil
+}
+
+func (u *User) AfterSave() error {
+	fmt.Println("After Save")
+	return nil
+}
+
+func (u *User) AfterCreate() error {
+	fmt.Println("After Create")
+	return nil
+}
+
 type Calendar struct {
 	gorm.Model
 	Name         string
 	UserID       uint `sql:"index:idx_calendar_user_id"`
 	Appointments []*Appointment
+}
+
+func (c *Calendar) BeforeCreate() error {
+	fmt.Println("Before Create Calendar")
+	return nil
+}
+
+func (c *Calendar) AfterCreate() error {
+	fmt.Println("After Create Calendar")
+	return errors.New("Cant create calendar")
 }
 
 type Appointment struct {
