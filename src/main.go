@@ -14,8 +14,8 @@ func main() {
 	}
 
 	// appointment_user 是指多對多的那個 table
-	db.DropTableIfExists(&User{}, &Calendar{}, &Appointment{}, "appointment_user")
-	db.CreateTable(&User{}, &Calendar{}, &Appointment{}, &Attachment{})
+	// db.DropTableIfExists(&User{}, &Calendar{}, &Appointment{}, "appointment_user")
+	db.Debug().AutoMigrate(&User{}, &Calendar{}, &Appointment{}, &Attachment{})
 
 }
 
@@ -36,13 +36,15 @@ type Calendar struct {
 
 type Appointment struct {
 	gorm.Model
-	Subject     string
-	Description string
-	StartTime   time.Time
-	Length      uint
-	CalendarID  uint
-	Attendees   []*User `gorm:"many2many:appointment_user"`
-	Attachments []Attachment
+	Subject           string
+	Description       string
+	StartTime         time.Time
+	Length            uint
+	CalendarID        uint
+	Recurring         bool
+	RecurrencePattern string
+	Attendees         []*User `gorm:"many2many:appointment_user"`
+	Attachments       []Attachment
 }
 
 type Attachment struct {
