@@ -14,15 +14,13 @@ func main() {
 		panic(err.Error())
 	}
 	// seedDB(db)
-	rows, _ := db.Debug().Model(&Appointment{}).Select("calendar_id, sum(length) as total_length").
-		Group("calendar_id").Having("calendar_id = ?", 2).Rows()
+	users := []User{}
+	// db.Find(&users)
+	db.Debug().Exec("SELECT * FROM users").Find(&users)
 
-	for rows.Next() {
-		var id, length int
-		rows.Scan(&id, &length)
-		fmt.Println(id, length)
+	for i := range users {
+		fmt.Printf("\n%v\n", users[i])
 	}
-
 }
 
 type UserViewModel struct {
