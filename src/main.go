@@ -15,7 +15,8 @@ func main() {
 
 	// appointment_user 是指多對多的那個 table
 	// db.DropTableIfExists(&User{}, &Calendar{}, &Appointment{}, "appointment_user")
-	db.Debug().AutoMigrate(&User{}, &Calendar{}, &Appointment{}, &Attachment{})
+	db.DropTableIfExists("attachments")
+	db.Debug().AutoMigrate(&User{}, &Calendar{}, &Appointment{})
 
 }
 
@@ -44,11 +45,4 @@ type Appointment struct {
 	Recurring         bool
 	RecurrencePattern string
 	Attendees         []*User `gorm:"many2many:appointment_user"`
-	Attachments       []Attachment
-}
-
-type Attachment struct {
-	gorm.Model
-	Data          []byte
-	AppointmentID uint `sql:"index:idx_attachment_appointment_id"`
 }
