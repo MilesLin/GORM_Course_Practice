@@ -14,13 +14,23 @@ func main() {
 		panic(err.Error())
 	}
 
-	seedDB(db)
-	appts := []Appointment{}
-	db.Debug().Scopes(LongMeeting).Find(&appts)
-	for _, appt := range appts {
-		fmt.Printf("\n%v\n", appt)
-	}
+	db.LogMode(true)
 
+	db.SetLogger(new(myLogger))
+
+	seedDB(db)
+	db.Find(&User{})
+
+}
+
+type myLogger struct{}
+
+func (ml myLogger) Print(vals ...interface{}) {
+	fmt.Printf("Current time is %v:", time.Now())
+	for _, v := range vals {
+		fmt.Printf("%v:", v)
+	}
+	fmt.Println()
 }
 
 func LongMeeting(db *gorm.DB) *gorm.DB {
