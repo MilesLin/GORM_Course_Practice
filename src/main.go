@@ -14,19 +14,13 @@ func main() {
 		panic(err.Error())
 	}
 	// seedDB(db)
-
-	usersVMs := []UserViewModel{}
-	rows, _ := db.Debug().Model(&User{}).Joins("inner join calendars on calendars.user_id = users.id").
-		Select("users.first_name, users.last_name, calendars.name").Rows()
+	rows, _ := db.Debug().Model(&Appointment{}).Select("calendar_id, sum(length) as total_length").
+		Group("calendar_id").Having("calendar_id = ?", 2).Rows()
 
 	for rows.Next() {
-		uvm := UserViewModel{}
-		rows.Scan(&uvm.FirstName, &uvm.LastName, &uvm.CalendarName)
-		usersVMs = append(usersVMs, uvm)
-	}
-
-	for _, u := range usersVMs {
-		fmt.Printf("\n%v\n", u)
+		var id, length int
+		rows.Scan(&id, &length)
+		fmt.Println(id, length)
 	}
 
 }
