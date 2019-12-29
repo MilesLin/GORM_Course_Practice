@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
@@ -15,72 +14,110 @@ func main() {
 		panic(err.Error())
 	}
 
-	db.DropTableIfExists(&User{}, &Calendar{}, &Appointment{}, "appointment_user")
-	db.AutoMigrate(&User{}, &Calendar{}, &Appointment{})
-
-	user := &User{
-		Username:  "adent",
-		FirstName: "Arthur",
-		LastName:  "Dent",
-		Calendar:  Calendar{Name: "Arthur's Calendar"},
+	seedDB(db)
+	appts := []Appointment{}
+	db.Debug().Scopes(LongMeeting).Find(&appts)
+	for _, appt := range appts {
+		fmt.Printf("\n%v\n", appt)
 	}
 
-	fmt.Println("Creating")
-	db.Create(&user)
+}
 
-	user.Calendar.Name = "Arthur's Itinerary"
+func LongMeeting(db *gorm.DB) *gorm.DB {
+	return db.Where("length > ?", 60)
+}
 
-	fmt.Println("Updating")
-	db.Save(&user)
+func seedDB(db *gorm.DB) {
+	db.DropTable(&User{})
+	db.CreateTable(&User{})
+	db.DropTable(&Calendar{})
+	db.CreateTable(&Calendar{})
+	db.DropTable(&Appointment{})
+	db.CreateTable(&Appointment{})
 
-	// fmt.Println("Deleting")
-	// db.Delete(&user)
+	users := map[string]*User{
+		"adent":       &User{Username: "adent", FirstName: "Arthur", LastName: "Dent"},
+		"fprefect":    &User{Username: "fprefect", FirstName: "Ford", LastName: "Prefect"},
+		"tmacmillan":  &User{Username: "tmacmillan", FirstName: "Tricia", LastName: "MacMillan"},
+		"zbeeblebrox": &User{Username: "zbeeblebox", FirstName: "Zaphod", LastName: "Beeblebrox"},
+		"mrobot":      &User{Username: "mrobot", FirstName: "Marvin", LastName: "Robot"},
+	}
+	for _, user := range users {
+		user.Calendar = Calendar{Name: "Calendar"}
+	}
 
+	users["adent"].AddAppointment(&Appointment{
+		Subject:   "Save House",
+		StartTime: parseTime("1979-07-02 08:00"),
+		Length:    60,
+	})
+	users["fprefect"].AddAppointment(&Appointment{
+		Subject:   "Get a Drink at Local Pub",
+		StartTime: parseTime("1979-07-02 10:00"),
+		Length:    11,
+		Attendees: []*User{users["adent"]},
+	})
+	users["fprefect"].AddAppointment(&Appointment{
+		Subject:   "Hitch a Ride",
+		StartTime: parseTime("1979-07-02 10:12"),
+		Length:    60,
+		Attendees: []*User{users["adent"]},
+	})
+	users["fprefect"].AddAppointment(&Appointment{
+		Subject:   "Attend Poetry Reading",
+		StartTime: parseTime("1979-07-02 11:00"),
+		Length:    30,
+		Attendees: []*User{users["adent"]},
+	})
+	users["fprefect"].AddAppointment(&Appointment{
+		Subject:   "Get Thrown into Space",
+		StartTime: parseTime("1979-07-02 11:40"),
+		Length:    5,
+		Attendees: []*User{users["adent"]},
+	})
+	users["fprefect"].AddAppointment(&Appointment{
+		Subject:   "Get Saved from Space",
+		StartTime: parseTime("1979-07-02 11:45"),
+		Length:    1,
+		Attendees: []*User{users["adent"]},
+	})
+	users["zbeeblebrox"].AddAppointment(&Appointment{
+		Subject:   "Explore Planet Builder's Homeworld",
+		StartTime: parseTime("1979-07-03 11:00"),
+		Length:    240,
+		Attendees: []*User{users["adent"], users["fprefect"], users["tmacmillan"],
+			users["mrobot"]},
+	})
+
+	for _, user := range users {
+		db.Save(&user)
+	}
+
+}
+
+func parseTime(timeRaw string) time.Time {
+	const timeLayout = "2006-01-02 15:04"
+	t, _ := time.Parse(timeLayout, timeRaw)
+	return t
 }
 
 type User struct {
 	gorm.Model
 	Username  string
-	FirstName string `sql:"type:VARCHAR(100)"`
+	FirstName string
 	LastName  string
 	Calendar  Calendar
 }
 
-func (u *User) BeforeSave() error {
-	fmt.Println("Before Save")
-	return nil
-}
-
-func (u *User) BeforeCreate() error {
-	fmt.Println("Before Create")
-	return nil
-}
-
-func (u *User) AfterSave() error {
-	fmt.Println("After Save")
-	return nil
-}
-
-func (u *User) AfterCreate() error {
-	fmt.Println("After Create")
-	return nil
+func (u *User) AddAppointment(appt *Appointment) {
+	u.Calendar.Appointments = append(u.Calendar.Appointments, appt)
 }
 
 type Calendar struct {
 	gorm.Model
 	Name         string
-	UserID       uint `sql:"index:idx_calendar_user_id"`
+	UserID       uint
 	Appointments []*Appointment
-}
-
-func (c *Calendar) BeforeCreate() error {
-	fmt.Println("Before Create Calendar")
-	return nil
-}
-
-func (c *Calendar) AfterCreate() error {
-	fmt.Println("After Create Calendar")
-	return errors.New("Cant create calendar")
 }
 
 type Appointment struct {
@@ -89,6 +126,6 @@ type Appointment struct {
 	Description string
 	StartTime   time.Time
 	Length      uint
-	CalendarID  uint    `sql:"index:idx_appointment_calendar_id"`
+	CalendarID  uint
 	Attendees   []*User `gorm:"many2many:appointment_user"`
 }
