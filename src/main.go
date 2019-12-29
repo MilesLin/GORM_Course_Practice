@@ -15,15 +15,29 @@ func main() {
 	}
 	// seedDB(db)
 
-	users := []User{}
+	// users := []User{}
 
-	// db.Debug().Limit(2).Order("first_name").Find(&users)
-	// db.Debug().Limit(2).Order("first_name desc").Find(&users)
-	db.Debug().Limit(2).Offset(2).Order("first_name desc").Find(&users)
+	// db.Debug().Select([]string{"first_name", "last_name"}).Find(&users)
 
-	for _, u := range users {
-		fmt.Printf("\n%v\n", u)
-	}
+	// usernames := []string{}
+	// db.Debug().Model(&User{}).Pluck("username", &usernames)
+
+	// userVMs := []UserViewModel{}
+	// db.Debug().Model(&User{}).Select([]string{"first_name", "last_name"}).Scan(&userVMs)
+	//
+	// for _, u := range userVMs {
+	// 	fmt.Printf("\n%v\n", u)
+	// }
+
+	var count int
+	db.Debug().Model(&User{}).Count(&count)
+	fmt.Println(count)
+
+}
+
+type UserViewModel struct {
+	FirstName string
+	LastName  string
 }
 
 func seedDB(db *gorm.DB) {
