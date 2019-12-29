@@ -15,16 +15,15 @@ func main() {
 	}
 	// seedDB(db)
 
-	fmt.Printf("%p", &User{Username: "abc"})
-
 	users := []User{}
-	db.Debug().Preload("Calendar.Appointments").Find(&users)
+
+	// db.Debug().Limit(2).Order("first_name").Find(&users)
+	// db.Debug().Limit(2).Order("first_name desc").Find(&users)
+	db.Debug().Limit(2).Offset(2).Order("first_name desc").Find(&users)
 
 	for _, u := range users {
-		fmt.Printf("\n%v\n", u.Calendar)
+		fmt.Printf("\n%v\n", u)
 	}
-
-	// fmt.Println(users)
 }
 
 func seedDB(db *gorm.DB) {
